@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ProductModule } from './api/product/product.module';
+import { LoginModule } from './api/login/login.module';
 
 @Module({
   imports: [
@@ -13,12 +15,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('DB_URI'),
+        uri: 'mongodb://127.0.0.1:27017/test-tutorial',
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }),
       inject: [ConfigService],
     }),
+    ProductModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [AppService],
