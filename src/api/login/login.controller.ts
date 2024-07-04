@@ -1,15 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { CreateLoginDto } from './dto/create-login.dto';
 import { UpdateLoginDto } from './dto/update-login.dto';
+import { Response } from 'express';
 
-@Controller('login')
+@Controller('auth')
 export class LoginController {
-  constructor(private readonly loginService: LoginService) {}
+  constructor(private readonly loginService: LoginService) { }
 
-  @Post()
-  create(@Body() createLoginDto: CreateLoginDto) {
-    return this.loginService.create(createLoginDto);
+  @Post('capture-user')
+  async create(
+    @Body() createLoginDto: CreateLoginDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.loginService.create(createLoginDto);
+    res
+      .status(HttpStatus.OK)
+      .send({
+        status: 'success', message: 'Data added...', statusCode: 200, data: result
+      });
   }
 
   @Get()
